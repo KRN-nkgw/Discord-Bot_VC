@@ -1,0 +1,21 @@
+必要な権限の追加
+Botに以下の権限を追加する必要があります：
+
+1. Discord Developer Portal → あなたのアプリケーション
+   Bot → Privileged Gateway Intents
+2. ✅ Server Members Intent をONにする（ボイス状態の取得に必要）
+   または、Bot Permissionsで：
+   ✅ View Server Members (メンバー情報の閲覧)
+
+再招待が必要
+権限を追加した場合、Botを再招待する必要があります：
+
+1. OAuth2 → URL Generator
+2. Scopes: bot, applications.commands
+3. Bot Permissions:
+   ✅ Send Messages
+   ✅ Embed Links
+   ✅ Read Messages/View Channels
+   ✅ View Server Members ← 追加
+
+4. 生成されたURLでBotを再招待

@@ -1,0 +1,14 @@
+{
+	"name": "discord-bot-vc",
+	"main": "src/index.js",
+	"compatibility_date": "2025-01-01",
+	"kv_namespaces": [
+		{
+			"binding": "COOLDOWN_KV",
+			"id": "6a0a7585bc7547c881ebaf8ef0a1af58"
+		}
+	]
+	// 環境変数（シークレット）は以下のコマンドで設定:
+	// npx wrangler secret put DISCORD_PUBLIC_KEY
+	// npx wrangler secret put DISCORD_BOT_TOKEN
+}

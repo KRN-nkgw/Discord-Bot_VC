@@ -1,0 +1,20 @@
+{
+  "name": "discord-bot_vc",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "register": "node --env-file=.env register-commands.js"
+  },
+  "author": "KRN",
+  "license": "ISC",
+  "description": "Discord Bot on Cloudflare Workers",
+  "dependencies": {
+    "discord-interactions": "^4.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.44.0"
+  }
+}
