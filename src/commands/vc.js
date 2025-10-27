@@ -6,7 +6,6 @@ import { checkCooldown, setCooldown, formatRemainingTime } from '../utils/cooldo
 /**
  * vcコマンドの処理
  */
-
 export async function handleVcCommand(interaction, env) {
   // サブコマンドを取得
   const subcommand = interaction.data.options?.[0];
@@ -22,7 +21,6 @@ export async function handleVcCommand(interaction, env) {
 /**
  * /vc start サブコマンドの処理
  */
-
 async function handleVcStart(interaction, options, env) {
   // オプションからメッセージを取得（任意）
   const messageOption = options.find((opt) => opt.name === 'message');
@@ -44,12 +42,14 @@ async function handleVcStart(interaction, options, env) {
   }
 
   const channelId = userVoiceState.channelId;
+  console.log('Debug - User in voice channel:', channelId);
 
   // コマンドを実行したチャンネルに対応する送信先チャンネルを取得
   const targetChannelId = getTargetChannelId(channelId);
+  console.log('Debug - Channel mapping:', { voiceChannel: channelId, targetChannel: targetChannelId });
 
-  // クールタイムチェック
-  const cooldownStatus = await checkCooldown(userId, env.COOLDOWN_KV);
+  // クールタイムチェック（チャンネルごと）
+  const cooldownStatus = await checkCooldown(userId, channelId, env.COOLDOWN_KV);
 
   if (cooldownStatus.onCooldown) {
     const remainingTimeText = formatRemainingTime(cooldownStatus.remainingTime);
@@ -61,6 +61,7 @@ async function handleVcStart(interaction, options, env) {
 
   // マッピングが見つからない場合
   if (!targetChannelId) {
+    console.log('Debug - No mapping found for channel:', channelId);
     return replyEphemeral('❌ このチャンネルからはメッセージを送信できマセン。\n' + '設定されたボイスチャンネルでコマンドを実行してクダサイ。');
   }
 
@@ -78,7 +79,6 @@ https://discord.com/channels/${guildId}/${channelId}`;
           name: displayName,
           icon_url: userId && interaction.member?.user?.avatar ? `https://cdn.discordapp.com/avatars/${userId}/${interaction.member.user.avatar}.png` : undefined,
         },
-        // title,
         description: `┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
 
 ${message}
@@ -94,8 +94,10 @@ ${message}
       await sendTextMessage(targetChannelId, content, env.DISCORD_BOT_TOKEN);
     }
 
-    // クールタイムを設定
-    await setCooldown(userId, env.COOLDOWN_KV);
+    // クールタイムを設定（チャンネルごと）
+    await setCooldown(userId, channelId, env.COOLDOWN_KV);
+
+    console.log('Debug - Message sent successfully to:', targetChannelId);
 
     // 実行者への応答
     return replyEphemeral(`✅ メッセージを <#${targetChannelId}> に送信しマシタ！`);

@@ -2,19 +2,18 @@
  * クールタイムの長さ（ミリ秒）
  * 30分 = 30 * 60 * 1000
  */
-
 const COOLDOWN_DURATION = 30 * 60 * 1000;
 
 /**
- * ユーザーがクールタイム中かチェック
+ * ユーザーがクールタイム中かチェック（チャンネルごと）
  * @param {string} userId - ユーザーID
+ * @param {string} channelId - チャンネルID
  * @param {KVNamespace} kv - Cloudflare KV namespace
  * @returns {Promise<{onCooldown: boolean, remainingTime: number|null}>}
  */
-
-export async function checkCooldown(userId, kv) {
+export async function checkCooldown(userId, channelId, kv) {
   try {
-    const key = `cooldown:${userId}`;
+    const key = `cooldown:${userId}:${channelId}`;
     const lastExecutionTime = await kv.get(key);
 
     if (!lastExecutionTime) {
@@ -42,13 +41,14 @@ export async function checkCooldown(userId, kv) {
 }
 
 /**
- * クールタイムを設定
+ * クールタイムを設定（チャンネルごと）
  * @param {string} userId - ユーザーID
+ * @param {string} channelId - チャンネルID
  * @param {KVNamespace} kv - Cloudflare KV namespace
  */
-export async function setCooldown(userId, kv) {
+export async function setCooldown(userId, channelId, kv) {
   try {
-    const key = `cooldown:${userId}`;
+    const key = `cooldown:${userId}:${channelId}`;
     const now = Date.now().toString();
     // 31分後に自動削除（30分 + 余裕1分）
     await kv.put(key, now, { expirationTtl: 31 * 60 });
