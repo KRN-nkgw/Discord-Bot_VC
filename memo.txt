@@ -16,6 +16,8 @@ Botに以下の権限を追加する必要があります：
    ✅ Send Messages
    ✅ Embed Links
    ✅ Read Messages/View Channels
-   ✅ View Server Members ← 追加
+   ✅ View Server Members
+   ✅ Set Voice Channel Status
+   ✅ Manage Channels
 
 4. 生成されたURLでBotを再招待

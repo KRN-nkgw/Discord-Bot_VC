@@ -1,4 +1,4 @@
-import { sendMessageWithEmbed, sendTextMessage, replyEphemeral } from '../utils/discord.js';
+import { sendMessageWithEmbed, sendTextMessage, setVoiceChannelStatus, replyEphemeral } from '../utils/discord.js';
 import { getTargetChannelId } from '../config.js';
 import { checkUserInVoice } from '../utils/voice.js';
 import { checkCooldown, setCooldown, formatRemainingTime } from '../utils/cooldown.js';
@@ -67,6 +67,7 @@ async function handleVcStart(interaction, options, env) {
 
   // 通常テキスト部分（ボイスチャンネルのリンク付き）
   const content = `📢 **${displayName}** が配信を始めマシタ。
+<@&1530156698759856308>
 https://discord.com/channels/${guildId}/${channelId}`;
 
   try {
@@ -92,6 +93,16 @@ ${message}
     } else {
       // メッセージがない場合: contentのみ送信
       await sendTextMessage(targetChannelId, content, env.DISCORD_BOT_TOKEN);
+    }
+
+    // ボイスチャンネルのステータスにも反映（メッセージがある場合のみ）
+    if (message && message.trim() !== '') {
+      try {
+        await setVoiceChannelStatus(channelId, message, env.DISCORD_BOT_TOKEN);
+      } catch (statusError) {
+        // ステータス設定に失敗してもメッセージ送信は成功しているので、ログのみ
+        console.error('Error setting voice channel status:', statusError);
+      }
     }
 
     // クールタイムを設定（チャンネルごと）

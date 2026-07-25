@@ -52,6 +52,28 @@ export async function sendTextMessage(channelId, content, botToken) {
 }
 
 /**
+ * ボイスチャンネルのステータスを設定
+ * @param {string} channelId - ボイスチャンネルのID
+ * @param {string} status - 設定するステータス文字列（空文字でクリア）
+ * @param {string} botToken - Bot Token
+ */
+export async function setVoiceChannelStatus(channelId, status, botToken) {
+  const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/voice-status`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bot ${botToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to set voice channel status: ${error}`);
+  }
+}
+
+/**
  * インタラクションへの応答を作成
  */
 
