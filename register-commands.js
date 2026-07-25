@@ -24,7 +24,7 @@ const commands = [
     options: [
       {
         name: 'start',
-        description: '配信をアピールする',
+        description: '配信をお知らせする',
         type: 1, // SUB_COMMAND型
         options: [
           {
