@@ -1,5 +1,5 @@
 import { sendMessageWithEmbed, sendTextMessage, setVoiceChannelStatus, replyEphemeral } from '../utils/discord.js';
-import { getTargetChannelId } from '../config.js';
+import { getTargetChannelId, DEFAULT_MENTION_ID, DEFAULT_MENTION_TYPE, ADDITIONAL_MENTION_ID, ADDITIONAL_MENTION_TYPE } from '../config.js';
 import { checkUserInVoice } from '../utils/voice.js';
 import { checkCooldown, setCooldown, formatRemainingTime } from '../utils/cooldown.js';
 
@@ -25,6 +25,10 @@ async function handleVcStart(interaction, options, env) {
   // オプションからメッセージを取得（任意）
   const messageOption = options.find((opt) => opt.name === 'message');
   const message = messageOption?.value || null;
+
+  // オプションから追加メンションのON/OFFを取得（デフォルト: false）
+  const mentionOption = options.find((opt) => opt.name === 'mention');
+  const shouldMentionAdditional = mentionOption?.value === true;
 
   // ユーザー情報を取得
   // サーバー内での表示名（ニックネーム）を優先、なければグローバル表示名、最後にユーザー名
@@ -66,8 +70,13 @@ async function handleVcStart(interaction, options, env) {
   }
 
   // 通常テキスト部分（ボイスチャンネルのリンク付き）
+  const defaultMention = DEFAULT_MENTION_TYPE === 'role' ? `<@&${DEFAULT_MENTION_ID}>` : `<@${DEFAULT_MENTION_ID}>`;
+
+  // オプションがtrueの場合のみ、あらかじめ決めた追加メンションを付与
+  const additionalMention = shouldMentionAdditional ? ' ' + (ADDITIONAL_MENTION_TYPE === 'role' ? `<@&${ADDITIONAL_MENTION_ID}>` : `<@${ADDITIONAL_MENTION_ID}>`) : '';
+
   const content = `📢 **${displayName}** が配信を始めマシタ。
-<@&1530156698759856308>
+${defaultMention}${additionalMention}
 https://discord.com/channels/${guildId}/${channelId}`;
 
   try {

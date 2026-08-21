@@ -24,13 +24,19 @@ const commands = [
     options: [
       {
         name: 'start',
-        description: '配信をお知らせする',
+        description: '配信をお知らせする（@VC通知 メンション付き）',
         type: 1, // SUB_COMMAND型
         options: [
           {
             name: 'message',
             description: '配信内容など一言（任意）',
             type: 3, // STRING型
+            required: false,
+          },
+          {
+            name: 'mention',
+            description: '@マルチ歓迎 も付ける？（デフォルト：なし）',
+            type: 5, // BOOLEAN型
             required: false,
           },
         ],
